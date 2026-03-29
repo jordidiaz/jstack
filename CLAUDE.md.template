@@ -1,0 +1,49 @@
+# CLAUDE.md
+
+## pa-stack
+
+Skills en: `~/.claude/skills/pa-stack/`
+Estado del proyecto: `.claude/PROJECT.md`
+Decisiones: `DECISIONS.md`
+
+**Al inicio de cada sesión:** leer `.claude/PROJECT.md` y reportar el estado sin que el dev lo pida. Sugerir el siguiente comando.
+
+**Skills disponibles:**
+- `/status` — retomar el proyecto, ver dónde estoy
+- `/think` — definir el problema antes de planear
+- `/plan` — plan técnico con diagramas y test matrix
+- `/review` — code review de staff engineer
+- `/qa` — QA con Playwright en browser real
+- `/debug` — root cause analysis sistemático
+- `/ship` — sync, tests, push y PR
+- `/docs-update` — actualizar docs después de shipar
+- `/retro` — retrospectiva semanal con métricas reales
+- `/careful` — advertir antes de comandos destructivos
+- `/freeze [dir]` — restringir edits a un directorio
+- `/unfreeze` — desactivar freeze
+
+## Stack de este proyecto
+
+<!-- Completar según el proyecto -->
+- [ ] Next.js / TypeScript / Tailwind
+- [ ] FastAPI / Python / SQLAlchemy
+- [ ] Tests: Vitest / Pytest / Playwright
+
+## Comandos de desarrollo
+
+```bash
+# Dev server
+npm run dev        # frontend
+uvicorn main:app   # backend
+
+# Tests
+npm test
+pytest
+
+# Build
+npm run build
+```
+
+## Convenciones
+
+<!-- Agregar convenciones específicas del proyecto -->

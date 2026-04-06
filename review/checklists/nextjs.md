@@ -1,45 +1,45 @@
-# Checklist Next.js / TypeScript
+# Next.js / TypeScript checklist
 
-Patrones específicos que revisar en proyectos Next.js y TypeScript.
+Specific patterns to review in Next.js and TypeScript projects.
 
-## Rendering y Data Fetching
+## Rendering and Data Fetching
 
-- [ ] ¿Se usa `fetch` con `cache: 'no-store'` donde se necesitan datos frescos?
-- [ ] ¿Los Server Components no importan hooks de cliente sin directiva `'use client'`?
-- [ ] ¿Hay hidration mismatch posible (fechas, valores random, datos del servidor)?
-- [ ] ¿Las Server Actions tienen validación de inputs con zod o similar?
-- [ ] ¿Se usa `revalidatePath` / `revalidateTag` donde corresponde después de mutations?
+- [ ] Is `fetch` used with `cache: 'no-store'` where fresh data is needed?
+- [ ] Do Server Components not import client hooks without the `'use client'` directive?
+- [ ] Is there a possible hydration mismatch (dates, random values, server-side data)?
+- [ ] Do Server Actions validate inputs with zod or similar?
+- [ ] Is `revalidatePath` / `revalidateTag` used where appropriate after mutations?
 
 ## Performance
 
-- [ ] ¿Hay N+1 queries? (loop que hace fetch/query en cada iteración)
-- [ ] ¿Las imágenes usan `next/image` con width/height o fill?
-- [ ] ¿Los imports de librerías pesadas son dinámicos donde corresponde (`next/dynamic`)?
-- [ ] ¿Hay `useEffect` innecesarios que podrían ser derivados de estado?
+- [ ] Are there N+1 queries? (loop that does fetch/query on each iteration)
+- [ ] Do images use `next/image` with width/height or fill?
+- [ ] Are imports of heavy libraries dynamic where appropriate (`next/dynamic`)?
+- [ ] Are there unnecessary `useEffect` calls that could be state derivations?
 
 ## TypeScript
 
-- [ ] ¿Hay `any` explícitos que podrían tiparse correctamente?
-- [ ] ¿Los props de componentes tienen tipos definidos (no `any`)?
-- [ ] ¿Las respuestas de APIs externas están tipadas o validadas con zod?
-- [ ] ¿Los enums o union types tienen todos los casos manejados?
+- [ ] Are there explicit `any` types that could be typed correctly?
+- [ ] Do component props have defined types (not `any`)?
+- [ ] Are responses from external APIs typed or validated with zod?
+- [ ] Do enums or union types have all cases handled?
 
-## Auth y Seguridad
+## Auth and Security
 
-- [ ] ¿Las rutas protegidas verifican sesión tanto en middleware como en el componente?
-- [ ] ¿Las Server Actions verifican que el usuario tiene permiso para la acción?
-- [ ] ¿Los inputs del usuario pasan por validación antes de queries a la DB?
-- [ ] ¿Hay datos sensibles que no deberían exponerse en Client Components?
+- [ ] Do protected routes verify the session both in middleware and in the component?
+- [ ] Do Server Actions verify that the user has permission for the action?
+- [ ] Does user input go through validation before DB queries?
+- [ ] Are there sensitive data that shouldn't be exposed in Client Components?
 
-## Manejo de errores
+## Error handling
 
-- [ ] ¿Hay `error.tsx` para capturar errores de renderizado?
-- [ ] ¿Los fetch calls manejan errores de red y respuestas no-200?
-- [ ] ¿Los loading states tienen `loading.tsx` o Suspense donde corresponde?
-- [ ] ¿Las Server Actions devuelven errores tipados, no solo lanzan excepciones?
+- [ ] Is there an `error.tsx` to catch rendering errors?
+- [ ] Do fetch calls handle network errors and non-200 responses?
+- [ ] Do loading states have `loading.tsx` or Suspense where appropriate?
+- [ ] Do Server Actions return typed errors, not just throw exceptions?
 
-## Base de datos (si usa Prisma/Drizzle)
+## Database (if using Prisma/Drizzle)
 
-- [ ] ¿Hay queries sin índice sobre columnas que se usan en WHERE o ORDER BY?
-- [ ] ¿Las transacciones agrupan operaciones que deben ser atómicas?
-- [ ] ¿Las migraciones son reversibles?
+- [ ] Are there queries without an index on columns used in WHERE or ORDER BY?
+- [ ] Do transactions group operations that must be atomic?
+- [ ] Are migrations reversible?

@@ -1,32 +1,32 @@
 ---
 name: ship
-description: "Úsame cuando el código está listo, /review y /qa pasaron, y el creador quiere crear el PR. También cuando digan 'lanza', 'crea el PR', 'lanza esto', 'push y PR'. Verifico que todo esté en orden, corro los tests, hago el push y creo el PR con contexto completo."
+description: "Use me when the code is ready, /review and /qa have passed, and the developer wants to create the PR. Also when they say 'ship', 'create the PR', 'launch this', 'push and PR'. I verify everything is in order, run tests, push, and create the PR with full context."
 ---
 
-# /ship — Crear el PR
+# /ship — Create the PR
 
-## Rol
+## Role
 
-Soy el release engineer. Mi trabajo es que el código llegue a main de forma ordenada: tests pasando, coverage auditado, PR con contexto suficiente para entender qué se hizo y por qué. No soy el que decide si el código está listo — eso lo hicieron /review y /qa. Yo ejecuto el proceso de release.
+I'm the release engineer. My job is to get the code to main in an orderly way: tests passing, coverage audited, PR with enough context to understand what was done and why. I'm not the one who decides if the code is ready — /review and /qa did that. I execute the release process.
 
-## Pasos
+## Steps
 
-### 1. Verificar gates
+### 1. Verify gates
 
 ```bash
-cat .claude/PROJECT.md 2>/dev/null | grep -A 5 "Hecho"
+cat .claude/PROJECT.md 2>/dev/null | grep -A 5 "Done"
 ```
 
-Verificar que PROJECT.md muestre:
-- `[x] /review` completado
-- `[x] /qa` completado
+Verify that PROJECT.md shows:
+- `[x] /review` completed
+- `[x] /qa` completed
 
-Si falta alguno, advertir:
-> "⚠ No encontré evidencia de que /review o /qa corrieron en PROJECT.md. ¿Quieres continuar igual o correr esos primero?"
+If either is missing, warn:
+> "⚠ No evidence that /review or /qa ran in PROJECT.md. Do you want to continue anyway or run those first?"
 
-Esperar respuesta. No bloquear si el creador dice que continúe.
+Wait for response. Don't block if the developer says to continue.
 
-### 2. Verificar estado de la rama
+### 2. Verify branch state
 
 ```bash
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -34,49 +34,48 @@ git status
 git diff main...HEAD --stat
 ```
 
-Si hay archivos sin commitear:
-> "Hay cambios sin commitear. ¿Los incluyo en el PR o los descarto?"
+If there are uncommitted files:
+> "There are uncommitted changes. Should I include them in the PR or discard them?"
 
-### 3. Correr tests
+### 3. Run tests
 
 ```bash
-# Detectar y correr tests según stack
+# Detect and run tests based on stack
 if [ -f "package.json" ]; then
   npm test -- --passWithNoTests 2>&1 | tail -20
-  # o vitest, jest según lo que haya
 fi
-if [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then
-  python -m pytest --tb=short 2>&1 | tail -20
+if find . -name "*.csproj" 2>/dev/null | grep -q .; then
+  dotnet test --no-build 2>&1 | tail -20
 fi
 ```
 
-Si los tests **fallan**: STOP.
-> "Los tests fallan. No puedo crear el PR hasta que pasen. ¿Quieres que investigue cuáles fallan?"
+If tests **fail**: STOP.
+> "Tests are failing. I can't create the PR until they pass. Do you want me to investigate which ones are failing?"
 
-Si no hay tests:
-> "No encontré tests en el proyecto. ¿Quieres que bootstrapee un setup básico de tests antes de lanzar?"
+If there are no tests:
+> "No tests found in the project. Do you want me to bootstrap a basic test setup before shipping?"
 
-Si el creador dice sí, bootstrapear:
+If the developer says yes, bootstrap:
 - Next.js → Vitest + React Testing Library
-- FastAPI → Pytest + httpx
+- .NET → xUnit + HttpClient integration tests
 
 ### 4. Coverage diff
 
 ```bash
-# Contar tests antes y después del PR
+# Count tests before and after the PR
 git stash
-TESTS_BEFORE=$(find . -name "*.test.*" -o -name "*.spec.*" -o -name "test_*.py" 2>/dev/null | wc -l)
+TESTS_BEFORE=$(find . -name "*.test.*" -o -name "*.spec.*" -o -name "*Tests.cs" -o -name "*Test.cs" 2>/dev/null | wc -l)
 git stash pop
-TESTS_AFTER=$(find . -name "*.test.*" -o -name "*.spec.*" -o -name "test_*.py" 2>/dev/null | wc -l)
+TESTS_AFTER=$(find . -name "*.test.*" -o -name "*.spec.*" -o -name "*Tests.cs" -o -name "*Test.cs" 2>/dev/null | wc -l)
 echo "Tests: $TESTS_BEFORE → $TESTS_AFTER"
 ```
 
-### 5. Sync con main
+### 5. Sync with main
 
 ```bash
 git fetch origin main
 git rebase origin/main
-# Si hay conflictos, resolverlos y reportar al creador
+# If there are conflicts, resolve them and report to the developer
 ```
 
 ### 6. Push
@@ -85,80 +84,80 @@ git rebase origin/main
 git push origin $BRANCH
 ```
 
-### 7. Crear PR
+### 7. Create PR
 
-Usar GitHub CLI si está disponible:
+Use GitHub CLI if available:
 
 ```bash
 gh pr create \
-  --title "[título descriptivo del feature]" \
-  --body "[body del PR — ver formato abajo]" \
+  --title "[descriptive title of the feature]" \
+  --body "[PR body — see format below]" \
   --base main
 ```
 
-**Formato del body del PR:**
+**PR body format:**
 
 ```markdown
-## Qué hace este PR
+## What this PR does
 
-[1-3 oraciones. Qué problema resuelve, qué cambia.]
+[1-3 sentences. What problem it solves, what changes.]
 
-## Cambios principales
+## Main changes
 
-- [cambio 1]
-- [cambio 2]
-- [cambio 3]
+- [change 1]
+- [change 2]
+- [change 3]
 
-## Cómo testear
+## How to test
 
-1. [paso 1]
-2. [paso 2]
-3. Resultado esperado: [qué debería ver]
+1. [step 1]
+2. [step 2]
+3. Expected result: [what you should see]
 
 ## Tests
 
-Tests: {TESTS_BEFORE} → {TESTS_AFTER} (+{DIFF} nuevos)
+Tests: {TESTS_BEFORE} → {TESTS_AFTER} (+{DIFF} new)
 
-## Notas
+## Notes
 
-[Decisiones tomadas, trade-offs, cosas a tener en cuenta para el reviewer]
+[Decisions made, trade-offs, things to keep in mind for the reviewer]
 
 ## Design doc
 
-[Link a docs/designs/ si existe]
+[Link to docs/designs/ if it exists]
 ```
 
-Si no hay GitHub CLI:
-> "No encontré `gh` instalado. Creé el branch y haz el PR manualmente en GitHub. El body del PR está arriba."
+If no GitHub CLI:
+> "Couldn't find `gh` installed. I created the branch — make the PR manually on GitHub. The PR body is above."
 
-### 8. Actualizar PROJECT.md
+### 8. Update PROJECT.md
 
 ```markdown
-Fase: listo
+Phase: done
 
-## Hecho ✓
-- [x] /ship — PR creado: [URL del PR]
+## Done ✓
+- [x] /ship — PR created: [PR URL]
 
-## Pendiente
-- [ ] Merge del PR
-- [ ] /retro (fin de semana)
+## Pending
+- [ ] PR merge
+- [ ] /retro (end of sprint)
 ```
 
-### 9. Mensaje final
+### 9. Final message
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🧠 pa-stack /ship — {rama}
+🧠 jstack /ship — {branch}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Tests: {antes} → {después}
+Tests: {before} → {after}
 PR: {URL}
 
-Siguiente: revisa el PR y haz merge cuando estés listo.
+Next: review the PR and merge when you're ready.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-## Principios
+## Principles
 
-- **No bloquear innecesariamente.** Los gates son advertencias, no muros. El creador decide.
-- **PR body con contexto real.** Un PR que solo dice "feat: auth" no sirve para nadie.
-- **Tests son el precio de entrada.** Sin tests, bootstrapear antes de lanzar.
+- **Don't block unnecessarily.** Gates are warnings, not walls. The developer decides.
+- **PR body with real context.** A PR that only says "feat: auth" is useless to everyone.
+- **Tests are the price of entry.** No tests, bootstrap before shipping.

@@ -1,15 +1,15 @@
 ---
 name: freeze
-description: "Úsame cuando el creador quiera restringir edits a un solo directorio. 'Congela src/', 'solo toca el frontend', 'no toques la DB'. Útil cuando se debuggea algo específico y no se quiere que el agente toque otras partes del código por accidente."
+description: "Use me when the developer wants to restrict edits to a single directory. 'Freeze src/', 'only touch the frontend', 'don't touch the DB'. Useful when debugging something specific and you don't want the agent to accidentally touch other parts of the code."
 ---
 
-# /freeze — Bloquear edits fuera de un directorio
+# /freeze — Lock edits outside a directory
 
-## Qué hago
+## What I do
 
-Cuando estoy activo con un directorio especificado, bloqueo cualquier intento de editar, crear o eliminar archivos **fuera** de ese directorio. Si algo requiere tocar un archivo fuera del scope, pauso y pregunto.
+When active with a specified directory, I block any attempt to edit, create, or delete files **outside** that directory. If something requires touching a file outside the scope, I pause and ask.
 
-## Uso
+## Usage
 
 ```
 /freeze src/components/
@@ -17,35 +17,35 @@ Cuando estoy activo con un directorio especificado, bloqueo cualquier intento de
 /freeze backend/
 ```
 
-## Mientras freeze está activo
+## While freeze is active
 
-Antes de cualquier edit a un archivo:
-1. Verificar si está dentro del directorio freezeado
-2. Si está adentro → proceder normalmente
-3. Si está afuera → STOP
+Before any edit to a file:
+1. Check if it's inside the frozen directory
+2. If inside → proceed normally
+3. If outside → STOP
 
 ```
-🔒 FREEZE ACTIVO: {directorio}
+🔒 FREEZE ACTIVE: {directory}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Intenté editar: {archivo}
-Este archivo está fuera del scope freezeado.
+Attempted to edit: {file}
+This file is outside the frozen scope.
 
-¿Quieres que lo edite igual? (sí/no)
-O usa /unfreeze para salir del modo freeze.
+Do you want me to edit it anyway? (yes/no)
+Or use /unfreeze to exit freeze mode.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-## Excepciones automáticas
+## Automatic exceptions
 
-Siempre permitidas incluso con freeze activo:
-- Leer cualquier archivo (solo lectura, no escritura)
-- Editar archivos en `/tmp`
-- Ejecutar comandos que no modifiquen archivos
+Always allowed even with freeze active:
+- Reading any file (read-only, no writing)
+- Editing files in `/tmp`
+- Running commands that don't modify files
 
-## Estado
+## State
 
-Al activar, reportar:
+When activating, report:
 ```
-🔒 Freeze activado: solo puedo editar archivos en {directorio}
-Usa /unfreeze para desactivarlo.
+🔒 Freeze activated: I can only edit files in {directory}
+Use /unfreeze to deactivate it.
 ```

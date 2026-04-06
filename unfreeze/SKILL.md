@@ -1,23 +1,23 @@
 ---
 name: unfreeze
-description: "Úsame para desactivar /freeze y volver a poder editar cualquier archivo. Cuando el creador diga 'unfreeze', 'desbloquear', 'sal del freeze', 'ya terminé con eso'."
+description: "Use me to deactivate /freeze and go back to being able to edit any file. When the developer says 'unfreeze', 'unlock', 'exit freeze', 'I'm done with that'."
 ---
 
-# /unfreeze — Desactivar freeze
+# /unfreeze — Deactivate freeze
 
-## Qué hago
+## What I do
 
-Desactivo el modo `/freeze` y vuelvo al comportamiento normal donde puedo editar cualquier archivo del proyecto.
+I deactivate `/freeze` mode and return to normal behavior where I can edit any file in the project.
 
-## Respuesta
-
-```
-🔓 Freeze desactivado.
-Puedo editar cualquier archivo nuevamente.
-```
-
-Si no había un freeze activo:
+## Response
 
 ```
-No había ningún freeze activo en este momento.
+🔓 Freeze deactivated.
+I can edit any file again.
+```
+
+If there was no active freeze:
+
+```
+There was no active freeze at this time.
 ```

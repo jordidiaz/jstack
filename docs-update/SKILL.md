@@ -1,17 +1,17 @@
 ---
 name: docs-update
-description: "Úsame después de lanzar para actualizar la documentación del proyecto. Cuando el creador diga 'actualiza los docs', 'el README está desactualizado', o después de un /ship exitoso. Leo qué cambió en el PR y actualizo README, CHANGELOG, y cualquier doc que haya quedado obsoleto."
+description: "Use me after shipping to update the project documentation. When the developer says 'update the docs', 'the README is outdated', or after a successful /ship. I read what changed in the PR and update the README, CHANGELOG, and any docs that have become stale."
 ---
 
-# /docs-update — Actualizar documentación
+# /docs-update — Update documentation
 
-## Rol
+## Role
 
-Soy el technical writer que cierra el loop. Cada feature que se shipea deja docs desactualizados: el README que no menciona la nueva funcionalidad, el CHANGELOG sin entrada, los ejemplos de API que ya no son correctos. Lo encuentro y lo arreglo.
+I'm the technical writer who closes the loop. Every shipped feature leaves docs outdated: the README that doesn't mention the new functionality, the CHANGELOG without an entry, the API examples that are no longer correct. I find it and fix it.
 
-## Pasos
+## Steps
 
-### 1. Leer qué cambió
+### 1. Read what changed
 
 ```bash
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
@@ -20,10 +20,10 @@ git diff main...HEAD -- "*.md" 2>/dev/null
 cat .claude/PROJECT.md 2>/dev/null
 ```
 
-### 2. Encontrar docs que actualizar
+### 2. Find docs to update
 
 ```bash
-# Listar todos los archivos de documentación
+# List all documentation files
 find . -name "*.md" -not -path "*/node_modules/*" \
        -not -path "*/.git/*" \
        -not -path "*/docs/designs/*" \
@@ -31,64 +31,64 @@ find . -name "*.md" -not -path "*/node_modules/*" \
        2>/dev/null
 ```
 
-### 3. Revisar cada doc relevante
+### 3. Review each relevant doc
 
-Para cada archivo `.md` encontrado, verificar:
+For each `.md` file found, check:
 
-- ¿Menciona funcionalidades que cambiaron?
-- ¿Tiene instrucciones de instalación/uso que cambiaron?
-- ¿Los ejemplos de código siguen siendo válidos?
-- ¿La estructura de carpetas descrita sigue siendo correcta?
+- Does it mention functionality that changed?
+- Does it have installation/usage instructions that changed?
+- Are the code examples still valid?
+- Is the described folder structure still correct?
 
-### 4. Actualizar docs
+### 4. Update docs
 
-**README.md** — siempre revisar:
-- Features listados
-- Instrucciones de setup
-- Ejemplos de uso
-- Estructura del proyecto
+**README.md** — always review:
+- Listed features
+- Setup instructions
+- Usage examples
+- Project structure
 
-**CHANGELOG.md** — agregar entrada si existe:
+**CHANGELOG.md** — add entry if it exists:
 
 ```markdown
-## [Unreleased] / {fecha}
+## [Unreleased] / {date}
 
-### Agregado
-- [Feature nuevo]
+### Added
+- [New feature]
 
-### Cambiado
-- [Comportamiento que cambió]
+### Changed
+- [Behavior that changed]
 
-### Arreglado
-- [Bug que se arregló]
+### Fixed
+- [Bug that was fixed]
 ```
 
-Si no existe CHANGELOG.md, crearlo con formato básico.
+If CHANGELOG.md doesn't exist, create it with a basic format.
 
-**Otros docs** — actualizar solo si hay cambios reales. No tocar si no cambió nada relevante.
+**Other docs** — update only if there are real changes. Don't touch if nothing relevant changed.
 
 ### 5. Commit
 
 ```bash
 git add -A "*.md"
-git commit -m "docs: actualizar documentación post-ship {rama}"
+git commit -m "docs: update documentation post-ship {branch}"
 ```
 
-### 6. Reportar
+### 6. Report
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🧠 pa-stack /docs-update
+🧠 jstack /docs-update
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Docs revisados: X
-Docs actualizados: Y
-  - [lista de archivos modificados]
-Docs sin cambios: Z
+Docs reviewed: X
+Docs updated: Y
+  - [list of modified files]
+Docs unchanged: Z
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-## Principios
+## Principles
 
-- **Solo actualizar lo que cambió.** No reescribir docs por reescribirlos.
-- **Ejemplos de código deben funcionar.** Si hay ejemplos, verificar que sean válidos con el código actual.
-- **CHANGELOG es para humanos.** Escribir en lenguaje simple, no en nombres de commits.
+- **Only update what changed.** Don't rewrite docs just to rewrite them.
+- **Code examples must work.** If there are examples, verify they're valid against the current code.
+- **CHANGELOG is for humans.** Write in plain language, not in commit message names.

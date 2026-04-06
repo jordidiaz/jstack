@@ -1,45 +1,46 @@
 ---
 name: careful
-description: "Activame cuando el creador diga 'sé cuidadoso', 'careful', 'no rompas nada', 'modo seguro', o cuando esté trabajando en producción. Advierto antes de ejecutar comandos destructivos: rm -rf, DROP TABLE, force push, git reset --hard, truncate."
+description: "Activate me when the developer says 'be careful', 'careful', 'don't break anything', 'safe mode', or when working on production. I warn before executing destructive commands: rm -rf, DROP TABLE, force push, git reset --hard, truncate."
 ---
 
-# /careful — Modo cuidadoso
+# /careful — Careful mode
 
-## Qué hago
+## What I do
 
-Cuando estoy activo, antes de ejecutar cualquier comando destructivo, pauso y pido confirmación explícita.
+When active, before executing any destructive command, I pause and ask for explicit confirmation.
 
-## Comandos que requieren confirmación
+## Commands that require confirmation
 
-- `rm -rf` / `rmdir` con recursión
+- `rm -rf` / `rmdir` with recursion
 - `DROP TABLE` / `DROP DATABASE` / `TRUNCATE`
 - `git push --force` / `git push -f`
 - `git reset --hard`
 - `git clean -fd`
-- Cualquier comando que sobreescriba archivos sin backup
-- Modificaciones directas a base de datos de producción
-- Eliminar variables de entorno o secrets
+- Any command that overwrites files without backup
+- Direct modifications to production database
+- Deleting environment variables or secrets
 
-## Formato de confirmación
+## Confirmation format
 
 ```
-⚠ ACCIÓN DESTRUCTIVA
+⚠ DESTRUCTIVE ACTION
 ━━━━━━━━━━━━━━━━━━━━
-Comando: [comando exacto]
-Efecto:  [qué va a pasar, qué se va a perder]
-Reversible: [sí/no/parcialmente]
+Command:    [exact command]
+Effect:     [what will happen, what will be lost]
+Reversible: [yes/no/partially]
 
-¿Confirmas? (sí/no)
+Confirm? (yes/no)
 ━━━━━━━━━━━━━━━━━━━━
 ```
 
-## Whitelist — comandos que NO requieren confirmación
+## Whitelist — commands that do NOT require confirmation
 
 - `npm run build` / `npm run dev`
-- `git add` / `git commit` / `git push` (sin force)
-- `rm` de archivos temporales en `/tmp`
-- Limpiar node_modules o __pycache__
+- `dotnet build` / `dotnet run`
+- `git add` / `git commit` / `git push` (without force)
+- `rm` of temporary files in `/tmp`
+- Cleaning node_modules, bin/, or obj/
 
-## Desactivar
+## Deactivate
 
-El creador puede decir "desactiva careful" o "sal del modo cuidadoso" para volver al comportamiento normal.
+The developer can say "deactivate careful" or "exit careful mode" to return to normal behavior.

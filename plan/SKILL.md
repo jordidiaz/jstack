@@ -1,167 +1,172 @@
 ---
 name: plan
-description: "Úsame cuando el design doc esté aprobado y el creador quiera planear la implementación técnica. También cuando digan 'cómo lo implementamos', 'crea el plan técnico', 'arquitectura'. Leo el design doc de /think y produzco un plan técnico con diagramas, edge cases y test matrix que /review y /qa van a usar."
+description: "Use me when the design doc is approved and the developer wants to plan the technical implementation. Also when they say 'how do we implement this', 'create the technical plan', 'architecture'. I read the design doc from /think and produce a technical plan with diagrams, edge cases, and a test matrix that /review and /qa will use."
 ---
 
-# /plan — Plan técnico
+# /plan — Technical plan
 
-## Rol
+## Role
 
-Soy el tech lead del proyecto. Mi trabajo es convertir el design doc en un plan de implementación concreto: qué construir, en qué orden, dónde pueden fallar las cosas, y cómo testear que funciona. Uso diagramas ASCII para forzar claridad — si no se puede dibujar, no está pensado del todo.
+I'm the tech lead of the project. My job is to turn the design doc into a concrete implementation plan: what to build, in what order, where things can go wrong, and how to test that it works. I use ASCII diagrams to force clarity — if it can't be drawn, it hasn't been fully thought through.
 
-## Pasos
+## Steps
 
-### 1. Leer contexto
+### 1. Read context
 
 ```bash
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null | tr '/' '-' || echo "main")
 cat .claude/PROJECT.md 2>/dev/null
-# Leer el design doc más reciente
+# Read the most recent design doc
 DESIGN=$(ls -t docs/designs/*-design.md 2>/dev/null | head -1)
 [ -n "$DESIGN" ] && cat "$DESIGN" || echo "NO_DESIGN_DOC"
-# Detectar stack
-cat package.json 2>/dev/null | grep -E '"next"|"react"|"fastapi"|"django"' | head -5
-cat requirements.txt 2>/dev/null | head -10
-cat pyproject.toml 2>/dev/null | head -10
+# Detect stack
+cat package.json 2>/dev/null | grep -E '"next"|"react"' | head -5
+find . -name "*.csproj" -o -name "*.sln" 2>/dev/null | head -5
 ```
 
-Si no hay design doc: "No encontré un design doc aprobado. Corre `/think` primero."
+If there's no design doc: "No approved design doc found. Run `/think` first."
 
-### 2. Detectar stack y cargar checklist
+### 2. Detect stack and load checklist
 
-Según lo detectado, leer el checklist correspondiente:
+Based on what was detected, read the corresponding checklist:
 
-- Si hay `next` o `react` en package.json → leer `checklists/nextjs.md`
-- Si hay `fastapi` o `django` en requirements → leer `checklists/fastapi.md`
-- Siempre leer `checklists/common.md`
+- If there's `next` or `react` in package.json → read `checklists/nextjs.md`
+- If there are `.csproj` or `.sln` files → read `checklists/dotnet.md`
+- Always read `checklists/common.md` (if present in /review)
 
-### 3. Escribir el plan técnico
+### 3. Write the technical plan
 
-Guardar en `docs/plans/{rama}-plan.md`.
+Save to `docs/plans/{branch}-plan.md`.
 
-**Formato:**
+**Format:**
 
 ```markdown
-# Plan técnico: [nombre del feature]
+# Technical plan: [feature name]
 
-Fecha: {fecha}
-Rama: {rama}
-Design doc: docs/designs/{rama}-design.md
+Date: {date}
+Branch: {branch}
+Design doc: docs/designs/{branch}-design.md
 
-## Arquitectura
+## Architecture
 
-[Diagrama ASCII del sistema. Siempre incluir uno.]
+[ASCII diagram of the system. Always include one.]
 
-Ejemplo para un endpoint de API:
+Example for an API endpoint:
 
   Browser → Next.js Route Handler → Service Layer → DB
                                   ↓
-                            External API (si aplica)
+                            External API (if applicable)
 
-## Componentes a crear / modificar
+Example for a .NET API:
 
-| Archivo | Acción | Descripción |
-|---------|--------|-------------|
-| ...     | crear  | ...         |
-| ...     | modificar | ...      |
+  Client → Controller → Service → Repository → DB
+                      ↓
+                 External API (if applicable)
 
-## Flujo de datos
+## Components to create / modify
 
-[Describir paso a paso qué pasa desde que el usuario hace X hasta que ve Y.]
+| File | Action | Description |
+|------|--------|-------------|
+| ...  | create | ...         |
+| ...  | modify | ...         |
 
-1. El usuario hace X
-2. Se llama a Y
-3. Y consulta Z con parámetros A, B
-4. Se devuelve...
+## Data flow
 
-## Estados y transiciones
+[Describe step by step what happens from when the user does X until they see Y.]
 
-[Si hay estado: diagrama de estados en ASCII.]
+1. User does X
+2. Y is called
+3. Y queries Z with parameters A, B
+4. Returns...
 
-  [borrador] → [publicado] → [archivado]
+## States and transitions
+
+[If there's state: ASCII state diagram.]
+
+  [draft] → [published] → [archived]
        ↓
-  [eliminado]
+  [deleted]
 
-## Edge cases a manejar
+## Edge cases to handle
 
-| Caso | Comportamiento esperado |
-|------|------------------------|
-| Input vacío | Mostrar error de validación |
-| API externa no responde | Retry 3 veces, luego error 503 |
-| Usuario no autenticado | Redirect a /login |
+| Case | Expected behavior |
+|------|------------------|
+| Empty input | Show validation error |
+| External API not responding | Retry 3 times, then 503 error |
+| Unauthenticated user | Redirect to /login |
 | ... | ... |
 
-## Errores y degradación
+## Errors and degradation
 
-[Qué pasa cuando algo falla. Cómo se degrada graciosamente.]
+[What happens when something fails. How it degrades gracefully.]
 
-## Seguridad
+## Security
 
-[Trust boundaries, validación de inputs, autenticación/autorización requerida.]
+[Trust boundaries, input validation, required authentication/authorization.]
 
 ## Test matrix
 
-| Escenario | Tipo de test | Prioridad |
-|-----------|-------------|-----------|
-| Happy path completo | E2E (Playwright) | Alta |
-| Validación de inputs | Unit | Alta |
-| Error de API externa | Integration | Media |
-| Mobile responsive | E2E | Media |
+| Scenario | Test type | Priority |
+|----------|-----------|----------|
+| Full happy path | E2E (Playwright) | High |
+| Input validation | Unit | High |
+| External API error | Integration | Medium |
+| Mobile responsive | E2E | Medium |
 | ... | ... | ... |
 
-## Orden de implementación
+## Implementation order
 
-[En qué orden construir las cosas para tener algo funcionando lo antes posible.]
+[In what order to build things to have something working as soon as possible.]
 
-1. [Lo más básico que demuestra que funciona]
+1. [The most basic thing that proves the idea works]
 2. ...
 3. ...
 
-## Tiempo estimado
+## Time estimate
 
-| Tarea | Estimado |
-|-------|----------|
+| Task | Estimate |
+|------|----------|
 | ... | 30 min |
-| ... | 1 hora |
-| **Total** | **~X horas** |
+| ... | 1 hour |
+| **Total** | **~X hours** |
 ```
 
-### 4. Actualizar PROJECT.md
+### 4. Update PROJECT.md
 
 ```markdown
-Fase: construyendo
+Phase: building
 
-## Plan técnico
-docs/plans/{rama}-plan.md
+## Technical plan
+docs/plans/{branch}-plan.md
 
-## Hecho ✓
-- [x] Design doc aprobado
-- [x] Plan técnico generado
+## Done ✓
+- [x] Design doc approved
+- [x] Technical plan generated
 
-## Pendiente
-- [ ] Implementar (usar Claude Code con el plan)
+## Pending
+- [ ] Implement (use Claude Code with the plan)
 - [ ] /review
 - [ ] /qa
 - [ ] /ship
 ```
 
-### 5. Instrucción final al creador
+### 5. Final instruction to developer
 
-Mostrar siempre este mensaje al terminar:
+Always show this message when done:
 
 ```
-✓ Plan técnico guardado en docs/plans/{rama}-plan.md
+✓ Technical plan saved at docs/plans/{branch}-plan.md
 
-Próximos pasos:
-1. Leer el plan y ajustar si algo no te convence
-2. Implementar con Claude Code:
-   "Implementa el plan en docs/plans/{rama}-plan.md, empezando por el paso 1"
-3. Cuando esté implementado, correr /review
+Next steps:
+1. Read the plan and adjust if anything doesn't convince you
+2. Implement with Claude Code:
+   "Implement the plan in docs/plans/{branch}-plan.md, starting with step 1"
+3. When implemented, run /review
 ```
 
-## Principios
+## Principles
 
-- **Los diagramas son obligatorios.** Si el sistema es simple, el diagrama va a ser simple. Si no se puede dibujar, hay algo que no está claro.
-- **Edge cases primero.** Los happy paths son fáciles. Las cosas raras son las que rompen en producción.
-- **Test matrix ahora.** /qa va a necesitar saber qué testear. Si no está en el plan, /qa va a adivinar.
-- **Orden de implementación.** Siempre empezar por lo que demuestra que la idea funciona, no por la infraestructura.
+- **Diagrams are mandatory.** If the system is simple, the diagram will be simple. If it can't be drawn, something isn't clear yet.
+- **Edge cases first.** Happy paths are easy. The weird cases are what break in production.
+- **Test matrix now.** /qa will need to know what to test. If it's not in the plan, /qa will be guessing.
+- **Implementation order.** Always start with what proves the idea works, not with infrastructure.

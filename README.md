@@ -1,104 +1,104 @@
-# pa-stack
+# jstack
 
-Framework de skills para Claude Code. Convierte a Claude Code en un equipo virtual para proyectos de fin de semana: piensa el problema, planea la implementación, revisa el código, testea en browser real y crea el PR.
+Skills framework for Claude Code. Turns Claude Code into a virtual development team for weekend projects: think through the problem, plan the implementation, review the code, test in a real browser, and create the PR.
 
-La idea central: **el agente recuerda dónde quedaste**. Puedes cerrar Claude Code el domingo y retomar el sábado siguiente con `/status` sin tener que recordar nada.
+The core idea: **the agent remembers where you left off**. You can close Claude Code on Sunday and resume the following Saturday with `/status` without having to remember anything.
 
 ## Skills
 
-| Skill | Rol | Qué hace |
-|-------|-----|----------|
-| `/status` | Memoria | Lee el estado del proyecto y indica dónde quedaste |
-| `/think` | YC Partner | Define el problema con 6 preguntas antes de codear |
-| `/plan` | Tech Lead | Arquitectura, diagramas ASCII, edge cases, test matrix |
-| `/review` | Staff Engineer | Encuentra bugs que pasan CI, auto-arregla lo obvio |
-| `/qa` | QA Lead | Playwright en browser real, commits atómicos por bug |
-| `/debug` | Debugger | Root cause analysis, nunca toca código sin entender |
-| `/ship` | Release Eng | Tests, push, PR con contexto completo |
-| `/docs-update` | Tech Writer | Actualiza README y CHANGELOG post-ship |
-| `/retro` | Eng Manager | Métricas reales del sprint, sin fluff |
-| `/careful` | Seguridad | Advierte antes de comandos destructivos |
-| `/freeze` | Seguridad | Restringe edits a un directorio |
-| `/unfreeze` | Seguridad | Desactiva freeze |
+| Skill | Role | What it does |
+|-------|------|--------------|
+| `/status` | Memory | Reads the project state and tells you exactly where you left off |
+| `/think` | YC Partner | Defines the problem with 6 questions before writing a single line of code |
+| `/plan` | Tech Lead | Architecture, ASCII diagrams, edge cases, test matrix |
+| `/review` | Staff Engineer | Finds bugs that pass CI, auto-fixes the obvious ones |
+| `/qa` | QA Lead | Playwright in a real browser, atomic commits per bug |
+| `/debug` | Debugger | Root cause analysis, never touches code without understanding |
+| `/ship` | Release Eng | Tests, push, PR with full context |
+| `/docs-update` | Tech Writer | Updates README and CHANGELOG post-ship |
+| `/retro` | Eng Manager | Real sprint metrics, no fluff |
+| `/careful` | Safety | Warns before destructive commands |
+| `/freeze` | Safety | Restricts edits to one directory |
+| `/unfreeze` | Safety | Deactivates freeze |
 
-## El flujo del sprint
+## The sprint flow
 
 ```
-/status          ← inicio de sesión: ¿dónde estoy?
-/think           ← Gate 1: definir y aprobar el problema
-/plan            ← plan técnico con diagramas
-[Claude Code]    ← implementar el plan
-/review          ← Gate 2: revisar y aprobar antes de lanzar
-/qa              ← testear en browser real
+/status          ← session start: where am I?
+/think           ← Gate 1: define and approve the problem
+/plan            ← technical plan with diagrams
+[Claude Code]    ← implement the plan
+/review          ← Gate 2: review and approve before shipping
+/qa              ← test in a real browser
 /ship            ← PR
-/docs-update     ← actualizar docs
-/retro           ← fin de semana: qué se logró
+/docs-update     ← update docs
+/retro           ← end of sprint: what was accomplished
 ```
 
-El creador aparece en **Gate 1** (aprobar el design doc) y **Gate 2** (aprobar los hallazgos de review/qa). El resto es autónomo.
+You show up at **Gate 1** (approve the design doc) and **Gate 2** (approve the review/qa findings). Everything else is autonomous.
 
-## Instalación
+## Installation
 
-### 1. Clonar en tu carpeta global de skills
+### 1. Clone into your global skills folder
 
 ```bash
-git clone https://github.com/tu-usuario/pa-stack ~/.claude/skills/pa-stack
+git clone https://github.com/jordidiaz/jstack ~/.claude/skills/jstack
 ```
 
-### 2. Agregar al proyecto
+### 2. Add to your project
 
-En el directorio de tu proyecto:
+In your project directory:
 
 ```bash
-# Copiar el template de CLAUDE.md
-cp ~/.claude/skills/pa-stack/CLAUDE.md.template CLAUDE.md
+# Copy the CLAUDE.md template
+cp ~/.claude/skills/jstack/CLAUDE.md.template CLAUDE.md
 
-# Crear la carpeta de estado
+# Create the state folder
 mkdir -p .claude
-cp ~/.claude/skills/pa-stack/PROJECT.md.template .claude/PROJECT.md
+cp ~/.claude/skills/jstack/PROJECT.md.template .claude/PROJECT.md
 
-# Crear DECISIONS.md
-echo "# Decisiones del proyecto\n" > DECISIONS.md
+# Create DECISIONS.md
+echo "# Project decisions\n" > DECISIONS.md
 
-# Editar el PROJECT.md con el nombre del proyecto
-# Editar CLAUDE.md con el stack y comandos del proyecto
+# Edit PROJECT.md with your project name
+# Edit CLAUDE.md with your stack and dev commands
 ```
 
-### 3. Arrancar
+### 3. Start
 
 ```
 /status
 ```
 
-Si es un proyecto nuevo:
+For a new project:
 ```
 /think
 ```
 
-## Estructura del proyecto con pa-stack
+## Project structure with jstack
 
 ```
-mi-proyecto/
+my-project/
 ├── .claude/
-│   └── PROJECT.md          ← estado del proyecto (commiteado)
+│   └── PROJECT.md          ← project state (committed)
 ├── docs/
-│   ├── designs/            ← design docs de /think
-│   └── plans/              ← planes técnicos de /plan
-├── CLAUDE.md               ← activa pa-stack en este repo
-├── DECISIONS.md            ← log append-only de decisiones
-└── [código del proyecto]
+│   ├── designs/            ← design docs from /think
+│   └── plans/              ← technical plans from /plan
+├── CLAUDE.md               ← activates jstack in this repo
+├── DECISIONS.md            ← append-only decisions log
+└── [project code]
 ```
 
-## Stack soportado
+## Supported stack
 
-- **Next.js / TypeScript / React** — checklists específicos en /review y /plan
-- **FastAPI / Python** — checklists específicos en /review y /plan
-- **Playwright** — requerido para /qa
+- **Next.js / TypeScript / React** — specific checklists in /review and /plan
+- **.NET / C#** — specific checklists in /review and /plan
+- **Playwright** — required for /qa
 
-## Filosofía
+## Philosophy
 
-pa-stack no es un copilot. No sugiere código mientras escribes. Es el proceso alrededor del código: pensar bien antes de arrancar, revisar antes de lanzar, y recordar dónde quedaste la próxima sesión.
+jstack is not a copilot. It doesn't suggest code as you type. It's the process around the code: thinking clearly before starting, reviewing before shipping, and remembering where you left off next session.
 
-La diferencia entre un proyecto de fin de semana que terminas y uno que abandonas suele ser si tienes claridad de qué falta y por dónde seguir. pa-stack mantiene esa claridad.
+The difference between a weekend project you finish and one you abandon is usually whether you have clarity on what's left and where to continue. jstack maintains that clarity.
 
 MIT License

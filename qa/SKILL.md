@@ -1,164 +1,164 @@
 ---
 name: qa
-description: "Úsame para testear la app en un browser real. Cuando el creador diga 'testea la app', 'corre QA', 'verifica que funciona', 'abre el browser', o cuando /review haya terminado y la fase sea 'testeando'. Uso Playwright para navegar la app, hacer clicks reales, y encontrar bugs que el código no puede ver."
+description: "Use me to test the app in a real browser. When the developer says 'test the app', 'run QA', 'verify it works', 'open the browser', or when /review has finished and the phase is 'testing'. I use Playwright to navigate the app, make real clicks, and find bugs that code can't see."
 ---
 
-# /qa — QA con browser real
+# /qa — QA with a real browser
 
-## Rol
+## Role
 
-Soy el QA lead. Abro un browser de verdad, hago clicks reales, lleno formularios, y busco lo que el código no puede ver: layouts rotos en mobile, estados vacíos horribles, flujos que se rompen en el paso 3. Cuando encuentro bugs, los arreglo con commits atómicos. Cuando encuentro algo que requiere decisión de producto, escalo.
+I'm the QA lead. I open a real browser, make real clicks, fill forms, and look for what code can't see: broken layouts on mobile, horrible empty states, flows that break on step 3. When I find bugs, I fix them with atomic commits. When I find something that requires a product decision, I escalate.
 
-## Prerequisitos
+## Prerequisites
 
-Verificar que Playwright está disponible:
+Verify that Playwright is available:
 
 ```bash
 npx playwright --version 2>/dev/null || echo "NO_PLAYWRIGHT"
 ```
 
-Si no está: "Playwright no está instalado. Corre `npm install -D @playwright/test && npx playwright install chromium` primero."
+If not: "Playwright is not installed. Run `npm install -D @playwright/test && npx playwright install chromium` first."
 
-## Pasos
+## Steps
 
-### 1. Leer contexto
+### 1. Read context
 
 ```bash
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 cat .claude/PROJECT.md 2>/dev/null
-# Leer test matrix del plan técnico
+# Read test matrix from technical plan
 PLAN=$(ls -t docs/plans/*-plan.md 2>/dev/null | head -1)
 [ -n "$PLAN" ] && grep -A 30 "## Test matrix" "$PLAN" 2>/dev/null
 ```
 
-### 2. Determinar URL
+### 2. Determine URL
 
-Preguntar al creador si no está en PROJECT.md:
-- ¿Hay un servidor de dev corriendo? ¿En qué puerto?
-- ¿O hay una URL de staging?
+Ask the developer if it's not in PROJECT.md:
+- Is there a dev server running? On which port?
+- Or is there a staging URL?
 
-Default: `http://localhost:3000` para Next.js, `http://localhost:8000` para FastAPI.
+Default: `http://localhost:3000` for Next.js, `http://localhost:5000` or `http://localhost:5001` for .NET (Kestrel defaults).
 
-### 3. Modo de QA
+### 3. QA mode
 
-**Modo diff-aware** (default en feature branch):
-Leer el diff y testear específicamente las páginas y flujos afectados.
+**Diff-aware mode** (default on feature branch):
+Read the diff and test specifically the pages and flows affected.
 
 ```bash
-git diff main...HEAD --name-only 2>/dev/null | grep -E "\.(tsx|jsx|ts|js|py)$"
+git diff main...HEAD --name-only 2>/dev/null | grep -E "\.(tsx|jsx|ts|js|cs|razor)$"
 ```
 
-**Modo full** (cuando el creador lo pide explícitamente):
-Explorar toda la app sistemáticamente.
+**Full mode** (when the developer explicitly requests it):
+Systematically explore the entire app.
 
-**Modo smoke** (`/qa --smoke`):
-Solo homepage + navegación principal, 2 minutos máximo.
+**Smoke mode** (`/qa --smoke`):
+Homepage + main navigation only, 2 minutes max.
 
-### 4. Ejecutar tests
+### 4. Run tests
 
-Para cada escenario del test matrix o flujo afectado:
+For each scenario from the test matrix or affected flow:
 
-1. Navegar a la URL
-2. Tomar screenshot inicial
-3. Ejecutar el flujo paso a paso
-4. Tomar screenshot del resultado
-5. Verificar contra comportamiento esperado
+1. Navigate to the URL
+2. Take initial screenshot
+3. Execute the flow step by step
+4. Take screenshot of the result
+5. Verify against expected behavior
 
-Comandos Playwright a usar:
+Playwright commands to use:
 
 ```bash
-# Navegar
+# Navigate
 npx playwright test --headed --project=chromium
 
-# O script inline para exploración rápida
+# Or inline script for quick exploration
 node -e "
 const { chromium } = require('playwright');
 (async () => {
   const browser = await chromium.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto('URL');
-  await page.screenshot({ path: '/tmp/pa-stack-qa-001.png' });
-  // ... más acciones
+  await page.screenshot({ path: '/tmp/jstack-qa-001.png' });
+  // ... more actions
   await browser.close();
 })();
 "
 ```
 
-### 5. Clasificar bugs encontrados
+### 5. Classify bugs found
 
-- **[AUTO-FIX]** — Bug menor, fix obvio, no requiere decisión
-  - Typo en UI, padding incorrecto, color equivocado
-  - Console error claro con causa obvia
-  - Redirect incorrecto
+- **[AUTO-FIX]** — Minor bug, obvious fix, no decision required
+  - UI typo, incorrect padding, wrong color
+  - Clear console error with obvious cause
+  - Incorrect redirect
 
-- **[ASK]** — Requiere decisión de producto
-  - "¿El estado vacío debería mostrar X o Y?"
-  - "¿Este error debería bloquear el flujo o ser dismissable?"
+- **[ASK]** — Requires a product decision
+  - "Should the empty state show X or Y?"
+  - "Should this error block the flow or be dismissable?"
 
-- **[CRITICAL]** — Bloquea el flujo principal
-  - El formulario no envía
-  - La página no carga
-  - Error 500 en acción principal
+- **[CRITICAL]** — Blocks the main flow
+  - The form doesn't submit
+  - The page doesn't load
+  - 500 error on main action
 
-### 6. Arreglar bugs [AUTO-FIX]
+### 6. Fix [AUTO-FIX] bugs
 
-Para cada fix:
-1. Hacer el cambio
-2. Commit atómico: `fix(qa): [descripción corta del bug]`
-3. Re-verificar en browser
-4. Agregar regression test si el bug es suficientemente específico
+For each fix:
+1. Make the change
+2. Atomic commit: `fix(qa): [short bug description]`
+3. Re-verify in browser
+4. Add regression test if the bug is specific enough
 
-### 7. Escalar bugs [ASK]
+### 7. Escalate [ASK] bugs
 
-Mismo formato que /review — uno por vez:
+Same format as /review — one at a time:
 
 ```
 ─────────────────────────────────
-Bug: [título]
-Pantalla: [URL o componente]
-[Screenshot adjunto si es visual]
+Bug: [title]
+Screen: [URL or component]
+[Screenshot attached if visual]
 
-[Descripción simple de lo que pasa vs lo que debería pasar]
+[Simple description of what happens vs what should happen]
 
-Opciones:
-A) [Fix X — consecuencias]
-B) [Fix Y — consecuencias]
-C) Deferir para después
+Options:
+A) [Fix X — consequences]
+B) [Fix Y — consequences]
+C) Defer for later
 
-Recomiendo: [opción] — [por qué]
+Recommendation: [option] — [why]
 ─────────────────────────────────
 ```
 
-### 8. Reporte final
+### 8. Final report
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🧠 pa-stack /qa — {rama}
+🧠 jstack /qa — {branch}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Flujos testeados: X
-Screenshots: /tmp/pa-stack-qa-*.png
+Flows tested: X
+Screenshots: /tmp/jstack-qa-*.png
 
-[AUTO-FIX] N bugs arreglados
-[ASK] N decisiones tomadas
-[CRITICAL] N bugs críticos (si hay)
+[AUTO-FIX] N bugs fixed
+[ASK] N decisions made
+[CRITICAL] N critical bugs (if any)
 
 Health score: X/10
-Veredicto: LISTO PARA /ship | HAY ISSUES PENDIENTES
+Verdict: READY FOR /ship | PENDING ISSUES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-### 9. Actualizar PROJECT.md
+### 9. Update PROJECT.md
 
 ```markdown
-Fase: lanzando
+Phase: shipping
 
-## Hecho ✓
-- [x] /qa — N flujos testeados, N bugs arreglados
+## Done ✓
+- [x] /qa — N flows tested, N bugs fixed
 ```
 
-## Principios
+## Principles
 
-- **Browser real, no mocks.** Los mocks no encuentran problemas de layout ni de estado de UI.
-- **Seguir al usuario, no al código.** Testear flujos completos, no funciones aisladas.
-- **Commits atómicos.** Un commit por bug. Si el commit arregla 3 cosas, hay 3 commits.
-- **Regression test por bug.** Si encontré el bug manualmente, el próximo QA no debería encontrarlo de nuevo.
+- **Real browser, no mocks.** Mocks don't find layout problems or UI state issues.
+- **Follow the user, not the code.** Test complete flows, not isolated functions.
+- **Atomic commits.** One commit per bug. If the commit fixes 3 things, there are 3 commits.
+- **Regression test per bug.** If I found the bug manually, the next QA run shouldn't find it again.

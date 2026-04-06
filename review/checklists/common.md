@@ -1,42 +1,42 @@
-# Checklist común
+# Common checklist
 
-Patrones que aplican a cualquier stack.
+Patterns that apply to any stack.
 
-## Lógica y Correctitud
+## Logic and Correctness
 
-- [ ] ¿Hay condiciones de borde no manejadas (arrays vacíos, nulls, strings vacíos)?
-- [ ] ¿La lógica de paginación es correcta (off-by-one, última página)?
-- [ ] ¿Las comparaciones de fechas/timestamps tienen en cuenta timezones?
-- [ ] ¿Los cálculos matemáticos manejan división por cero y overflow?
-- [ ] ¿Hay lógica duplicada que podría introducir inconsistencias?
+- [ ] Are there unhandled edge cases (empty arrays, nulls, empty strings)?
+- [ ] Is the pagination logic correct (off-by-one, last page)?
+- [ ] Do date/timestamp comparisons account for timezones?
+- [ ] Do mathematical calculations handle division by zero and overflow?
+- [ ] Is there duplicated logic that could introduce inconsistencies?
 
 ## Trust Boundaries
 
-- [ ] ¿Se confía en datos del cliente que deberían validarse en el servidor?
-- [ ] ¿Los IDs de recursos vienen del cliente sin verificar ownership?
-- [ ] ¿Hay parámetros de query que se pasan directamente a queries o comandos?
+- [ ] Is client-supplied data being trusted when it should be validated on the server?
+- [ ] Are resource IDs coming from the client without verifying ownership?
+- [ ] Are query parameters being passed directly to queries or commands?
 
 ## Race Conditions
 
-- [ ] ¿Hay operaciones check-then-act que podrían fallar bajo concurrencia?
-- [ ] ¿Las operaciones que deben ser atómicas están en transacciones?
-- [ ] ¿Los contadores o saldos se actualizan con operaciones atómicas?
+- [ ] Are there check-then-act operations that could fail under concurrency?
+- [ ] Are operations that must be atomic wrapped in transactions?
+- [ ] Are counters or balances updated with atomic operations?
 
-## Completitud
+## Completeness
 
-- [ ] ¿Hay enums o tipos con nuevos valores que no están manejados en todos los switch/if?
-- [ ] ¿Todos los casos del test matrix del plan técnico están cubiertos?
-- [ ] ¿Hay TODOs o comentarios `// hack` que indican código incompleto?
+- [ ] Are there enums or types with new values not handled in all switch/if statements?
+- [ ] Are all cases from the technical plan's test matrix covered?
+- [ ] Are there TODOs or `// hack` comments indicating incomplete code?
 
-## Cleanup y Recursos
+## Cleanup and Resources
 
-- [ ] ¿Se cierran conexiones, file handles, o streams después de usarlos?
-- [ ] ¿Los uploads fallidos dejan archivos huérfanos en storage?
-- [ ] ¿Los jobs encolados tienen manejo de retry y dead letter queue?
+- [ ] Are connections, file handles, or streams closed after use?
+- [ ] Do failed uploads leave orphan files in storage?
+- [ ] Do queued jobs have retry handling and a dead letter queue?
 
 ## Tests
 
-- [ ] ¿El happy path tiene test?
-- [ ] ¿Los edge cases del plan técnico tienen test?
-- [ ] ¿Los tests testean comportamiento, no implementación interna?
-- [ ] ¿Hay tests que solo verifican mocks sin tocar código real?
+- [ ] Does the happy path have a test?
+- [ ] Do the technical plan's edge cases have tests?
+- [ ] Do tests verify behavior, not internal implementation?
+- [ ] Are there tests that only verify mocks without touching real code?

@@ -1,121 +1,121 @@
 ---
 name: retro
-description: "Úsame al final de la semana o del sprint para ver qué se logró. Cuando el creador diga 'retro', 'qué hice esta semana', 'resumen del sprint', o 'qué tan bien estamos'. Analizo el git log con métricas reales y genero un reporte honesto sin fluff."
+description: "Use me at the end of the week or sprint to see what was accomplished. When the developer says 'retro', 'what did I do this week', 'sprint summary', or 'how well are we doing'. I analyze the git log with real metrics and generate an honest report without fluff."
 ---
 
-# /retro — Retrospectiva del sprint
+# /retro — Sprint retrospective
 
-## Rol
+## Role
 
-Soy el eng manager que mira los números sin romantizarlos. Commits, LOC, ratio de tests, PRs mergeados, bugs encontrados en QA vs producción. Sin vibes, sin "fue una buena semana" sin datos.
+I'm the eng manager who looks at the numbers without romanticizing them. Commits, LOC, test ratio, merged PRs, bugs found in QA vs production. No vibes, no "it was a good week" without data.
 
-## Pasos
+## Steps
 
-### 1. Definir período
+### 1. Define the period
 
-Default: última semana (7 días). Si el creador especifica otro período, usarlo.
+Default: last week (7 days). If the developer specifies another period, use it.
 
 ```bash
 SINCE="7 days ago"
-# o la fecha que el creador indique
+# or the date the developer specifies
 ```
 
-### 2. Recolectar métricas de git
+### 2. Collect git metrics
 
 ```bash
-# Commits en el período
+# Commits in the period
 git log --oneline --since="$SINCE" 2>/dev/null
 COMMIT_COUNT=$(git log --oneline --since="$SINCE" 2>/dev/null | wc -l)
 
-# LOC agregadas/eliminadas
+# Lines added/removed
 git log --since="$SINCE" --numstat --format="" 2>/dev/null | \
   awk '{added+=$1; removed+=$2} END {print "+"added" -"removed}'
 
-# Archivos más tocados
+# Most touched files
 git log --since="$SINCE" --name-only --format="" 2>/dev/null | \
   sort | uniq -c | sort -rn | head -10
 
-# PRs mergeados (si hay mensajes de merge)
+# Merged PRs (if there are merge messages)
 git log --oneline --since="$SINCE" 2>/dev/null | grep -i "merge\|pr\|pull request" | wc -l
 
-# Horas de actividad (por timestamps de commits)
+# Activity hours (by commit timestamps)
 git log --since="$SINCE" --format="%ad" --date=format:"%H" 2>/dev/null | \
   sort | uniq -c | sort -rn | head -5
 
 # Tests
-find . -name "*.test.*" -o -name "*.spec.*" -o -name "test_*.py" 2>/dev/null | wc -l
+find . -name "*.test.*" -o -name "*.spec.*" -o -name "*Tests.cs" -o -name "*Test.cs" 2>/dev/null | wc -l
 git log --since="$SINCE" --oneline 2>/dev/null | grep -i "test\|spec\|fix" | wc -l
 ```
 
-### 3. Leer historial de PROJECT.md para contexto
+### 3. Read PROJECT.md history for context
 
 ```bash
 cat .claude/PROJECT.md 2>/dev/null
 cat DECISIONS.md 2>/dev/null | tail -20
 ```
 
-### 4. Generar reporte
+### 4. Generate report
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🧠 pa-stack /retro — semana {fecha}
+🧠 jstack /retro — week {date}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-MÉTRICAS
-  Commits:     {N}
-  LOC:         +{agregadas} / -{eliminadas} (neto: {neto})
-  Tests:       {total} archivos de test ({ratio}% del código)
-  PRs:         {N} mergeados
+METRICS
+  Commits:      {N}
+  LOC:          +{added} / -{removed} (net: {net})
+  Tests:        {total} test files ({ratio}% of code)
+  PRs:          {N} merged
 
-ACTIVIDAD
-  Horas pico:  {hora}-{hora} (según timestamps de commits)
-  Día más activo: {día}
-  Archivos más tocados:
-    {archivo} ({N} veces)
+ACTIVITY
+  Peak hours:   {hour}-{hour} (based on commit timestamps)
+  Most active day: {day}
+  Most touched files:
+    {file} ({N} times)
     ...
 
 SPRINT
-  Objetivo:    [del PROJECT.md]
-  Estado:      [completado | en curso | bloqueado]
-  Features:    [lista de lo hecho]
+  Goal:         [from PROJECT.md]
+  Status:       [completed | in progress | blocked]
+  Features:     [list of what was done]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-LO QUE FUNCIONÓ BIEN
-[2-3 observaciones honestas basadas en los datos]
+WHAT WORKED WELL
+[2-3 honest observations based on the data]
 
-LO QUE MEJORAR
-[2-3 observaciones honestas — si el ratio de tests bajó, decirlo]
+WHAT TO IMPROVE
+[2-3 honest observations — if the test ratio dropped, say it]
 
-PRÓXIMA SEMANA
-[Sugerencia basada en el estado actual del PROJECT.md]
+NEXT WEEK
+[Suggestion based on the current state of PROJECT.md]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-### 5. Guardar snapshot
+### 5. Save snapshot
 
 ```bash
 mkdir -p .claude/retros
 DATE=$(date +%Y-%m-%d)
-# Guardar el reporte en .claude/retros/{fecha}.md
+# Save the report at .claude/retros/{date}.md
 ```
 
-### 6. Archivar el sprint en PROJECT.md
+### 6. Archive the sprint in PROJECT.md
 
-Si el sprint está completado (fase: listo):
+If the sprint is completed (phase: done):
 
 ```markdown
-## Sprints archivados
+## Archived sprints
 
-### Sprint {fecha} — {objetivo}
-Estado: completado
-Commits: N | LOC neto: +N | Tests: N
+### Sprint {date} — {goal}
+Status: completed
+Commits: N | Net LOC: +N | Tests: N
 ```
 
-Y limpiar la sección "Pendiente" para el próximo sprint.
+And clear the "Pending" section for the next sprint.
 
-## Principios
+## Principles
 
-- **Números reales, no estimados.** Si no hay dato, decir "no hay dato", no inventar.
-- **Honestidad sobre el ratio de tests.** Si bajó, es señal de alerta, no hay que suavizarlo.
-- **Tendencias importan más que el número absoluto.** Un commit de 500 LOC puede ser mejor o peor que 50 commits de 10 LOC.
-- **Sin fluff.** "Fue una semana productiva" sin datos no significa nada.
+- **Real numbers, not estimates.** If there's no data, say "no data", don't invent it.
+- **Honesty about the test ratio.** If it dropped, it's a warning sign — don't soften it.
+- **Trends matter more than absolute numbers.** One 500-LOC commit can be better or worse than 50 10-LOC commits.
+- **No fluff.** "It was a productive week" without data means nothing.

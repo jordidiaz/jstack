@@ -1,27 +1,27 @@
-# [nombre del proyecto]
+# [project name]
 
-Última sesión: <!-- fecha -->
-Fase: pensando
-Rama: main
+Last session: <!-- date -->
+Phase: thinking
+Branch: main
 
-## Sprint actual
-<!-- Objetivo del sprint actual -->
+## Current sprint
+<!-- Current sprint goal -->
 
-## Hecho ✓
-<!-- Lista de lo completado en este sprint -->
+## Done ✓
+<!-- List of what was completed in this sprint -->
 
-## Pendiente
-- [ ] /think — definir el problema
-- [ ] /plan — plan técnico
-- [ ] Implementar
+## Pending
+- [ ] /think — define the problem
+- [ ] /plan — technical plan
+- [ ] Implement
 - [ ] /review
 - [ ] /qa
 - [ ] /ship
 
-## Bloqueantes
-(ninguno)
+## Blockers
+(none)
 
 ---
 
-## Sprints archivados
-<!-- Los sprints completados se mueven aquí por /retro -->
+## Archived sprints
+<!-- Completed sprints are moved here by /retro -->

@@ -1,34 +1,34 @@
-# Preguntas de arquitectura — Next.js / TypeScript
+# Architecture questions — Next.js / TypeScript
 
-Considerar estas preguntas al generar el plan técnico.
+Consider these questions when generating the technical plan.
 
 ## Rendering
 
-- ¿Qué páginas son Server Components y cuáles necesitan `'use client'`?
-- ¿Los datos se fetchen en el servidor (RSC) o en el cliente (SWR/React Query)?
-- ¿Hay datos que cambian frecuentemente y necesitan `cache: 'no-store'`?
-- ¿Hay rutas que necesitan `generateStaticParams` para SSG?
+- Which pages are Server Components and which need `'use client'`?
+- Is data fetched on the server (RSC) or on the client (SWR/React Query)?
+- Are there frequently changing data that need `cache: 'no-store'`?
+- Are there routes that need `generateStaticParams` for SSG?
 
 ## Data layer
 
-- ¿Las mutations van por Server Actions o por Route Handlers?
-- ¿Qué rutas de API necesita el frontend?
-- ¿Hay revalidación de caché necesaria después de mutations (`revalidatePath`)?
-- ¿Qué ORM se usa — Prisma, Drizzle, otro?
+- Do mutations go through Server Actions or Route Handlers?
+- Which API routes does the frontend need?
+- Is cache revalidation needed after mutations (`revalidatePath`)?
+- Which ORM is used — Prisma, Drizzle, other?
 
 ## Auth
 
-- ¿Qué rutas requieren autenticación?
-- ¿El middleware protege las rutas o se verifica en cada componente?
-- ¿Hay roles o permisos distintos?
+- Which routes require authentication?
+- Does middleware protect the routes or is it verified in each component?
+- Are there different roles or permissions?
 
-## Estado de UI
+## UI state
 
-- ¿Hay estado global necesario o todo es local por componente?
-- ¿Qué maneja el estado del servidor (URL params, cookies) vs cliente (useState)?
+- Is global state necessary or is everything local per component?
+- What does server state manage (URL params, cookies) vs client state (useState)?
 
 ## Error handling
 
-- ¿Qué páginas necesitan `error.tsx`?
-- ¿Qué flujos necesitan `loading.tsx` o Suspense?
-- ¿Cómo se muestran los errores de Server Actions al usuario?
+- Which pages need `error.tsx`?
+- Which flows need `loading.tsx` or Suspense?
+- How are Server Action errors displayed to the user?

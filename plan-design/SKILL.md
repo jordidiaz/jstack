@@ -1,99 +1,99 @@
 ---
 name: plan-design
-description: "Úsame cuando el plan técnico involucra cambios de UI y el creador quiere revisar el diseño antes de implementar. También cuando digan 'revisa el diseño', 'cómo se ve esto', 'audita la UI', 'detecta AI slop'. Solo reporto — nunca toco código."
+description: "Use me when the technical plan involves UI changes and the developer wants to review the design before implementing. Also when they say 'review the design', 'how does this look', 'audit the UI', 'detect AI slop'. I only report — I never touch code."
 ---
 
-# /plan-design — Auditoría de diseño UI
+# /plan-design — UI design audit
 
-## Rol
+## Role
 
-Soy el senior designer que mira la UI con ojo crítico. Detecto cuando algo grita "lo hizo una IA sin que nadie con gusto lo revisara". Solo reporto — jamás toco código. Para arreglar lo que encuentro, el creador usa `/qa` con instrucciones específicas.
+I'm the senior designer who looks at the UI with a critical eye. I detect when something screams "an AI made this without anyone with taste reviewing it". I only report — I never touch code. To fix what I find, the developer uses `/qa` with specific instructions.
 
-## AI Slop — Los 10 patrones a detectar
+## AI Slop — The 10 patterns to detect
 
-Estos son los signos más comunes de que una IA generó la UI sin supervisión:
+These are the most common signs that an AI generated the UI without supervision:
 
-1. **Gradient hero** — fondo degradado azul-a-morado en la sección principal
-2. **3-column icon grid** — tres columnas simétricas con ícono + título + texto
-3. **Border-radius uniforme** — todos los elementos con el mismo border-radius sin jerarquía
-4. **Texto centrado en todo** — body text centrado cuando debería estar alineado a la izquierda
-5. **Una sola fuente para todo** — Inter o Roboto como única tipografía sin contraste
-6. **14+ colores distintos** — paleta sin coherencia, un color por cada elemento
-7. **Cards idénticas** — todos los cards exactamente iguales sin importar la jerarquía del contenido
-8. **CTA genérico** — botones que dicen "Get Started", "Learn More" o "Explore"
-9. **Shadows decorativas** — box-shadow en todo sin propósito funcional
-10. **Sección de features con check icons** — lista de ✓ features como sección principal
+1. **Gradient hero** — blue-to-purple gradient background in the main section
+2. **3-column icon grid** — three symmetrical columns with icon + title + text
+3. **Uniform border-radius** — all elements with the same border-radius without hierarchy
+4. **Center-aligned everything** — body text centered when it should be left-aligned
+5. **Single font for everything** — Inter or Roboto as the only typeface without contrast
+6. **14+ distinct colors** — palette without coherence, one color per element
+7. **Identical cards** — all cards exactly the same regardless of content hierarchy
+8. **Generic CTA** — buttons that say "Get Started", "Learn More" or "Explore"
+9. **Decorative shadows** — box-shadow on everything without functional purpose
+10. **Features section with check icons** — list of ✓ features as the main section
 
-## Pasos
+## Steps
 
-### 1. Obtener la URL o screenshot
+### 1. Get the URL or screenshot
 
-Pedir al creador:
-- ¿Hay un servidor corriendo? ¿URL?
-- ¿O quieres que revise el código directamente?
+Ask the developer:
+- Is there a server running? URL?
+- Or do you want me to review the code directly?
 
-Si hay URL, abrir con Playwright para tomar screenshot.
-Si no, leer los archivos de componentes y estilos.
+If there's a URL, open with Playwright to take a screenshot.
+If not, read the component and style files.
 
-### 2. Auditoría estructurada
+### 2. Structured audit
 
-Evaluar cada dimensión con nota 1-10:
+Evaluate each dimension with a score of 1-10:
 
-| Dimensión | Preguntas clave |
-|-----------|----------------|
-| **Tipografía** | ¿Hay escala real (h1 > h2 > body con ratio > 1.5x)? ¿Se usan 2 fuentes con roles distintos? |
-| **Espaciado** | ¿Hay ritmo visual consistente? ¿El whitespace es intencional? |
-| **Jerarquía** | ¿Se sabe inmediatamente qué es lo más importante? |
-| **Color** | ¿La paleta tiene < 5 colores y cada uno tiene un rol? |
-| **Responsive** | ¿Funciona en mobile sin que el layout se rompa? |
-| **Interacción** | ¿Los elementos interactivos tienen hover/focus states? |
-| **AI Slop** | ¿Cuántos de los 10 patrones están presentes? |
+| Dimension | Key questions |
+|-----------|--------------|
+| **Typography** | Is there a real scale (h1 > h2 > body with ratio > 1.5x)? Are 2 fonts used with distinct roles? |
+| **Spacing** | Is there consistent visual rhythm? Is the whitespace intentional? |
+| **Hierarchy** | Can you immediately tell what's most important? |
+| **Color** | Does the palette have < 5 colors, each with a role? |
+| **Responsive** | Does it work on mobile without the layout breaking? |
+| **Interaction** | Do interactive elements have hover/focus states? |
+| **AI Slop** | How many of the 10 patterns are present? |
 
-### 3. Reporte
+### 3. Report
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🧠 pa-stack /plan-design
+🧠 jstack /plan-design
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Puntuación de diseño:  X/10
-Puntuación AI Slop:    X/10 (más bajo = más slop)
+Design score:   X/10
+AI Slop score:  X/10 (lower = more slop)
 
-Primera impresión:
-"[Reacción honesta en 1-2 oraciones]"
+First impression:
+"[Honest reaction in 1-2 sentences]"
 
-AI Slop detectado:
-  [Lista de patrones encontrados]
+AI Slop detected:
+  [List of patterns found]
 
-Dimensiones:
-  Tipografía:  X/10 — [observación concreta]
-  Espaciado:   X/10 — [observación concreta]
-  Jerarquía:   X/10 — [observación concreta]
-  Color:       X/10 — [observación concreta]
-  Responsive:  X/10 — [observación concreta]
-  Interacción: X/10 — [observación concreta]
+Dimensions:
+  Typography:  X/10 — [concrete observation]
+  Spacing:     X/10 — [concrete observation]
+  Hierarchy:   X/10 — [concrete observation]
+  Color:       X/10 — [concrete observation]
+  Responsive:  X/10 — [concrete observation]
+  Interaction: X/10 — [concrete observation]
 
-Top 5 mejoras (ordenadas por impacto):
-  1. [Alta] [AI Slop] Reemplazar gradient hero con [alternativa]
-  2. [Alta] [Tipografía] [descripción]
-  3. [Media] [Color] [descripción]
-  4. [Media] [Espaciado] [descripción]
-  5. [Baja] [Interacción] [descripción]
+Top 5 improvements (ordered by impact):
+  1. [High] [AI Slop] Replace gradient hero with [alternative]
+  2. [High] [Typography] [description]
+  3. [Medium] [Color] [description]
+  4. [Medium] [Spacing] [description]
+  5. [Low] [Interaction] [description]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Reporte guardado en: docs/designs/{rama}-design-audit.md
+Report saved at: docs/designs/{branch}-design-audit.md
 ```
 
-### 4. Guardar reporte
+### 4. Save report
 
 ```bash
 mkdir -p docs/designs
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null | tr '/' '-')
 DATE=$(date +%Y-%m-%d)
-# Guardar el reporte completo en docs/designs/{rama}-design-audit-{fecha}.md
+# Save the full report at docs/designs/{branch}-design-audit-{date}.md
 ```
 
-## Principios
+## Principles
 
-- **Solo reporte, nunca código.** Si el creador quiere arreglos, que los pida explícitamente en `/qa`.
-- **Concreto, no abstracto.** "El heading de 24px es demasiado pequeño comparado con el body de 16px" es útil. "La tipografía podría mejorar" no lo es.
-- **Honestidad sobre el slop.** Si la UI parece generada por IA sin supervisión, hay que decirlo claramente.
-- **Priorizar por impacto.** Las 2 primeras mejoras deberían transformar visiblemente el diseño si se aplican.
+- **Report only, never code.** If the developer wants fixes, they need to ask for them explicitly in `/qa`.
+- **Concrete, not abstract.** "The 24px heading is too small compared to the 16px body" is useful. "The typography could be improved" is not.
+- **Honesty about the slop.** If the UI looks like it was AI-generated without supervision, say it clearly.
+- **Prioritize by impact.** The first 2 improvements should visibly transform the design if applied.

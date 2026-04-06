@@ -1,49 +1,50 @@
 # CLAUDE.md
 
-## pa-stack
+## jstack
 
-Skills en: `~/.claude/skills/pa-stack/`
-Estado del proyecto: `.claude/PROJECT.md`
-Decisiones: `DECISIONS.md`
+Skills at: `~/.claude/skills/jstack/`
+Project state: `.claude/PROJECT.md`
+Decisions: `DECISIONS.md`
 
-**Al inicio de cada sesión:** leer `.claude/PROJECT.md` y reportar el estado sin que el dev lo pida. Sugerir el siguiente comando.
+**At the start of each session:** read `.claude/PROJECT.md` and report the state without the dev having to ask. Suggest the next command.
 
-**Skills disponibles:**
-- `/status` — retomar el proyecto, ver dónde estoy
-- `/think` — definir el problema antes de planear
-- `/plan` — plan técnico con diagramas y test matrix
-- `/review` — code review de staff engineer
-- `/qa` — QA con Playwright en browser real
-- `/debug` — root cause analysis sistemático
-- `/ship` — sync, tests, push y PR
-- `/docs-update` — actualizar docs después de shipar
-- `/retro` — retrospectiva semanal con métricas reales
-- `/careful` — advertir antes de comandos destructivos
-- `/freeze [dir]` — restringir edits a un directorio
-- `/unfreeze` — desactivar freeze
+**Available skills:**
+- `/status` — resume the project, see where I am
+- `/think` — define the problem before planning
+- `/plan` — technical plan with diagrams and test matrix
+- `/review` — staff engineer code review
+- `/qa` — QA with Playwright in a real browser
+- `/debug` — systematic root cause analysis
+- `/ship` — sync, tests, push and PR
+- `/docs-update` — update docs after shipping
+- `/retro` — weekly retrospective with real metrics
+- `/careful` — warn before destructive commands
+- `/freeze [dir]` — restrict edits to one directory
+- `/unfreeze` — deactivate freeze
 
-## Stack de este proyecto
+## This project's stack
 
-<!-- Completar según el proyecto -->
+<!-- Fill in based on the project -->
 - [ ] Next.js / TypeScript / Tailwind
-- [ ] FastAPI / Python / SQLAlchemy
-- [ ] Tests: Vitest / Pytest / Playwright
+- [ ] .NET / C# / Entity Framework Core
+- [ ] Tests: Vitest / xUnit / Playwright
 
-## Comandos de desarrollo
+## Dev commands
 
 ```bash
 # Dev server
 npm run dev        # frontend
-uvicorn main:app   # backend
+dotnet run         # backend
 
 # Tests
 npm test
-pytest
+dotnet test
 
 # Build
 npm run build
+dotnet publish
 ```
 
-## Convenciones
+## Conventions
 
-<!-- Agregar convenciones específicas del proyecto -->
+<!-- Add project-specific conventions here -->
